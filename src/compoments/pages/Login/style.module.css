@@ -1,0 +1,29 @@
+.logincenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  
+}
+
+.spacinginput {
+  margin-left: 10%;
+  margin-right: 10%;
+  width: auto !important;
+}
+
+.googleloginbtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px; /* Ajoute un espace au-dessus du bloc social login */
+}
+
+.divider {
+    height: 0.09em !important;
+    min-width: 30vw !important;
+    background: linear-gradient(rgba(240, 240, 240, 0), #fff) !important;
+    margin: 0 4vh !important;
+  }  
+  
