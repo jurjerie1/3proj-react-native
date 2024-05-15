@@ -12,7 +12,7 @@ export enum AuthStatus {
 
 export const UseAuth = () => {
   const {account, setAccount} = useAccountStore();
-  const navigation = useNavigation<NavigationProp<any>>();
+  // const navigation = useNavigation<NavigationProp<any>>();
 
   let status;
   switch (account) {
@@ -58,7 +58,7 @@ export const UseAuth = () => {
           user: response.data.user,
           token: response.data.token,
         });
-        navigation.navigate('Home');
+        // navigation.navigate('Home');
         return {success: true, message: 'Login successful'};
       } else {
         return {success: false, message: 'Missing token or user information'};
@@ -70,7 +70,7 @@ export const UseAuth = () => {
 
   const logout = () => {
     setAccount(null);
-    navigation.navigate('login');
+    // navigation.navigate('login');
   };
 
   return {

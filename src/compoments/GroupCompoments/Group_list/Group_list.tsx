@@ -12,6 +12,7 @@ import {
 import {API_URL_IMAGE} from '../../../../config';
 import {axiosUtils} from '../../../Utils/axiosUtils';
 import {Group} from '../../../../Types';
+import {useNavigation} from '@react-navigation/native';
 
 export const Group_list = () => {
   const [groups, setGroups] = useState<Group[]>([]); // pour stocker la liste des groupes
@@ -20,7 +21,7 @@ export const Group_list = () => {
   const [showEditGroupModal, setShowEditGroupModal] = useState(false); // pour afficher le modal de modification
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null); // pour stocker le groupe à modifier
   const [selectedImage, setSelectedImage] = useState<File | null>(null); // pour stocker l'image sélectionnée
-
+  const navigation = useNavigation();
   const {ApiGet, ApiPost, ApiPut, ApiDelete} = axiosUtils();
 
   useEffect(() => {
@@ -79,7 +80,7 @@ export const Group_list = () => {
   };
 
   const handleCardClick = (group: Group) => {
-    // Navigation logic here
+    navigation.navigate('GroupDetails', {group});
   };
 
   return (
@@ -97,7 +98,6 @@ export const Group_list = () => {
             <TouchableOpacity
               style={styles.cardImageContainer}
               onPress={() => handleCardClick(group)}>
-              <Text style={styles.header}>Liste des groupes</Text>
               <Image
                 style={styles.cardImage}
                 source={{uri: `${API_URL_IMAGE}${group.imageUrl}`}}
@@ -275,9 +275,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cardImageContainer: {
-    width: '100%',
-    paddingBottom: '100%',
-    position: 'relative',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderWidth: 1,
+    borderColor: '#000',
+    marginBottom: 20,
   },
   cardImage: {
     position: 'absolute',
@@ -372,5 +375,3 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
 });
-
-export default Group_list;
