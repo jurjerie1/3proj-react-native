@@ -14,8 +14,8 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 type LoginScreenNavigationProp = NavigationProp<any, 'Register'>;
 
 export const Login = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('mobile1@email.com');
+  const [password, setPassword] = useState<string>('mobileMDP1!');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');

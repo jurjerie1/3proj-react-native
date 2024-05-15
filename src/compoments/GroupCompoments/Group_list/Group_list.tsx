@@ -12,6 +12,7 @@ import {
 import {API_URL_IMAGE} from '../../../../config';
 import {axiosUtils} from '../../../Utils/axiosUtils';
 import {Group} from '../../../../Types';
+import {useNavigation} from '@react-navigation/native';
 
 export const Group_list = () => {
   const [groups, setGroups] = useState<Group[]>([]); // pour stocker la liste des groupes
@@ -20,7 +21,7 @@ export const Group_list = () => {
   const [showEditGroupModal, setShowEditGroupModal] = useState(false); // pour afficher le modal de modification
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null); // pour stocker le groupe à modifier
   const [selectedImage, setSelectedImage] = useState<File | null>(null); // pour stocker l'image sélectionnée
-
+  const navigation = useNavigation();
   const {ApiGet, ApiPost, ApiPut, ApiDelete} = axiosUtils();
 
   useEffect(() => {
@@ -79,7 +80,8 @@ export const Group_list = () => {
   };
 
   const handleCardClick = (group: Group) => {
-    // Navigation logic here
+    console.log('Group selected:', group);
+    navigation.navigate('GroupDetails', {group});
   };
 
   return (
@@ -372,5 +374,3 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
 });
-
-export default Group_list;
