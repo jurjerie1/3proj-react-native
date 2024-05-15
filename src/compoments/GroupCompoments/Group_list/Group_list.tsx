@@ -80,7 +80,6 @@ export const Group_list = () => {
   };
 
   const handleCardClick = (group: Group) => {
-    console.log('Group selected:', group);
     navigation.navigate('GroupDetails', {group});
   };
 
