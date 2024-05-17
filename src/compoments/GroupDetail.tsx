@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View} from 'react-native';
-import {Group} from '../../../Types.ts';
+import {Group} from '../../Types.ts';
 
 export const GroupDetails = ({group}: {group: Group}) => {
   return (

@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {SearchUser} from "../../UserCompoments/SearchUser/SearchUser.tsx";
+import {SearchUser} from "../../GroupCompoments/UserComponments/SearchUser/Search.tsx";
 import {Invitation, User} from "../../../Types.ts";
 import axios from "axios";
 import {API_URL} from "../../../config.ts";
-import {axiosUtils} from "../../../utils/axiosUtils.ts";
+import {axiosUtils} from "../../../Utils/axiosUtils.ts";
 
 export interface ModalInviteUserToTeamProps {
     showModal: boolean;
     handleCloseModal: () => void;
-    groupId: string;
+  groupId: string;
 }
 
 export const ModalInviteUserToTeam: React.FC<ModalInviteUserToTeamProps> = ({showModal, handleCloseModal, groupId}) => {
