@@ -9,7 +9,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Platform,
+  Alert,
 } from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {axiosUtils} from '../Utils/axiosUtils.ts';
 import {API_URL_IMAGE} from '../../config.ts';
 
@@ -24,8 +28,9 @@ export const Profile = () => {
     languagePreference: '',
     profileImage: null,
   });
+  const [newProfileImage, setNewProfileImage] = useState<string | null>(null);
 
-  const {ApiGet, ApiPost} = axiosUtils();
+  const {ApiGet, ApiPut} = axiosUtils();
 
   useEffect(() => {
     ApiGet('Users/profile')
@@ -55,17 +60,80 @@ export const Profile = () => {
   const handleEditProfileSubmit = () => {
     const formData = new FormData();
     Object.keys(editProfile).forEach(key => {
-      formData.append(key, editProfile[key]);
+      if (key === 'profileImage' && typeof editProfile[key] === 'string') {
+        formData.append(key, editProfile[key]);
+      } else {
+        formData.append(key, editProfile[key]);
+      }
     });
+    if (newProfileImage) {
+      formData.append('profileImage', {
+        uri: newProfileImage,
+        type: 'image/jpeg',
+        name: 'profile.jpg',
+      });
+    }
 
-    ApiPost('Users/updateProfile', formData)
+    ApiPut('Users/updateProfile', formData)
       .then(response => {
         setProfile(response.data);
         setShowEditModal(false);
+        setNewProfileImage(null);
       })
       .catch(error => {
         console.error('Erreur lors de la mise à jour du profil:', error);
       });
+  };
+
+  const requestCameraPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.CAMERA);
+    return result === RESULTS.GRANTED;
+  };
+
+  const requestLibraryPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+    return result === RESULTS.GRANTED;
+  };
+
+  const handleTakePhoto = async () => {
+    const granted = await requestCameraPermission();
+    if (granted) {
+      launchCamera({}, response => {
+        if (response.didCancel || response.errorCode) {
+          console.error('User cancelled image picker or error occurred');
+          return;
+        }
+        if (response.assets && response.assets.length > 0) {
+          setNewProfileImage(response.assets[0].uri);
+        } else {
+          console.error('No assets found in the response');
+        }
+      });
+    } else {
+      Alert.alert('Accès refusé', "L'accès à la caméra a été refusé.");
+    }
+  };
+
+  const handleSelectPhoto = async () => {
+    const granted = await requestLibraryPermission();
+    if (granted) {
+      launchImageLibrary({}, response => {
+        if (response.didCancel || response.errorCode) {
+          console.error('User cancelled image picker or error occurred');
+          return;
+        }
+        if (response.assets && response.assets.length > 0) {
+          setNewProfileImage(response.assets[0].uri);
+        } else {
+          console.error('No assets found in the response');
+        }
+      });
+    } else {
+      Alert.alert(
+        'Accès refusé',
+        "L'accès à la bibliothèque de photos a été refusé.",
+      );
+    }
   };
 
   if (!profile) {
@@ -79,11 +147,6 @@ export const Profile = () => {
             source={{uri: `${API_URL_IMAGE}${profile.profileImagePath}`}}
             style={styles.profileimg}
           />
-          <TouchableOpacity
-            onPress={() => setShowEditModal(true)}
-            style={styles.editprofilebtn}>
-            <Text style={styles.editprofilebtntext}>Modifier le profil</Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.profileinfosection}>
           <View style={styles.infofield}>
@@ -103,6 +166,11 @@ export const Profile = () => {
             <Text style={styles.info}>{profile.userName}</Text>
           </View>
         </View>
+        <TouchableOpacity
+          onPress={() => setShowEditModal(true)}
+          style={styles.editprofilebtn}>
+          <Text style={styles.editprofilebtntext}>Modifier le profil</Text>
+        </TouchableOpacity>
       </View>
 
       <Modal visible={showEditModal} transparent={true} animationType="slide">
@@ -113,12 +181,24 @@ export const Profile = () => {
               <Button title="Fermer" onPress={() => setShowEditModal(false)} />
             </View>
             <View style={styles.modalBody}>
+              <View style={styles.imageContainer}>
+                <Image
+                  source={{
+                    uri: newProfileImage
+                      ? newProfileImage
+                      : `${API_URL_IMAGE}${profile.profileImagePath}`,
+                  }}
+                  style={styles.profileimg}
+                />
+              </View>
+              <Text style={styles.label}>Nom d'utilisateur</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Nom d'utilisateur"
                 value={editProfile.userName}
                 onChangeText={text => handleEditProfileChange('userName', text)}
               />
+              <Text style={styles.label}>Prénom</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Prénom"
@@ -127,13 +207,22 @@ export const Profile = () => {
                   handleEditProfileChange('firstName', text)
                 }
               />
+              <Text style={styles.label}>Nom de famille</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Nom de famille"
                 value={editProfile.lastName}
                 onChangeText={text => handleEditProfileChange('lastName', text)}
               />
-              {/* Ajoutez d'autres champs de formulaire ici selon les besoins */}
+              <View style={styles.buttonContainer}>
+                <Button title="Prendre une photo" onPress={handleTakePhoto} />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Sélectionner une photo"
+                  onPress={handleSelectPhoto}
+                />
+              </View>
               <Button
                 title="Sauvegarder les modifications"
                 onPress={handleEditProfileSubmit}
@@ -151,7 +240,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: '5%',
   },
   profilecontainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 10,
     backgroundColor: 'white',
@@ -164,7 +252,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   profileimagesection: {
-    flex: 1,
     alignItems: 'center',
   },
   profileimg: {
@@ -186,7 +273,6 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   profileinfosection: {
-    flex: 2,
     padding: 20,
   },
   infofield: {
@@ -230,11 +316,23 @@ const styles = StyleSheet.create({
   modalBody: {
     marginTop: 20,
   },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  label: {
+    color: '#2cc4b5',
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
+    marginBottom: 10,
+  },
+  buttonContainer: {
     marginBottom: 10,
   },
 });

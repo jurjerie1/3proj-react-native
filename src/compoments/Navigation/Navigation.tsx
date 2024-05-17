@@ -4,9 +4,10 @@ import {Group_list} from '../GroupCompoments/Group_list/Group_list.tsx';
 import {NavigationGroup} from './NavigationGroup.tsx';
 import {Profile} from '../../screens/Profile.tsx';
 import React from 'react';
-import {ChatScreen} from '../../screens/ChatScreen.tsx';
+import {ContactScreen} from '../../screens/PrivateChatScreens/ContactScreen.tsx';
 import {Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {NavigationPrivateChat} from './NavigationPrivateChat.tsx';
 
 export const Navigation = () => {
   const Stack = createStackNavigator();
@@ -50,7 +51,7 @@ export const Navigation = () => {
         />
         <Tab.Screen
           name="PrivateChat"
-          component={ChatScreen}
+          component={NavigationPrivateChat}
           options={{
             title: 'Messages',
             tabBarBadge: 3,
