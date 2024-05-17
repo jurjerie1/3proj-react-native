@@ -34,6 +34,16 @@ export const ContactScreen = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (searchResults !== null) {
+      const newContact: Contact = {
+        user: searchResults,
+      };
+      handleContactClick(newContact);
+      setContacts(prevContacts => [newContact, ...prevContacts]);
+    }
+  }, [searchResults]);
+
   const handleContactClick = (contact: Contact) => {
     navigation.navigate('PrivateChat', {contact});
   };

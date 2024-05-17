@@ -34,7 +34,7 @@ export const SearchUser: React.FC<SearchUserProps> = ({
   // Fonction pour effectuer la recherche
   const handleSearch = () => {
     if (searchTerm.length < 1) return;
-    ApiPost(`}Users/search`, {
+    ApiPost(`Users/search`, {
       Query: searchTerm,
       Limit: 20,
       TeamId: null,
