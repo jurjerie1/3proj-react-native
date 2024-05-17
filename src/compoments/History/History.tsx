@@ -45,45 +45,41 @@ export const History: React.FC = () => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Historique</Text>
-      <View style={styles.table}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.headerCell}>Nom</Text>
-          <Text style={styles.headerCell}>Groupe</Text>
-          <Text style={styles.headerCell}>Catégorie</Text>
-          <Text style={styles.headerCell}>Montant</Text>
-          <Text style={styles.headerCell}>Statut</Text>
-          <Text style={styles.headerCell}>Date</Text>
-          <Text style={styles.headerCell} />
-        </View>
-        {history.map(historyItem => (
-          <View key={historyItem.id} style={styles.tableRow}>
-            <Text style={styles.cell}>{historyItem.title}</Text>
-            <Text style={styles.cell}>{historyItem.team.name}</Text>
-            <Text style={styles.cell}>{historyItem.category}</Text>
-            <Text style={styles.cell}>{historyItem.amount}€</Text>
-            <Text style={styles.cell}>
-              {historyItem.isRefunded === 'True'
-                ? 'Remboursé'
-                : 'Non remboursé'}
-            </Text>
-            <Text style={styles.cell}>{historyItem.date}</Text>
-            <View style={styles.cell}>
-              <Button
-                title="Détails"
-                onPress={() => toggleHistoryModal(historyItem.id)}
-              />
-              {/*<HistoryDetailsModal*/}
-              {/*  historyItem={historyItem}*/}
-              {/*  showDetailsModal={showHistoryModal}*/}
-              {/*  toggleModal={toggleHistoryModal}*/}
-              {/*/>*/}
-            </View>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Historique</Text>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerCell}>Nom</Text>
+            <Text style={styles.headerCell}>Catégorie</Text>
+            <Text style={styles.headerCell}>Montant</Text>
+            <Text style={styles.headerCell}>Statut</Text>
+            <Text style={styles.headerCell}>Date</Text>
+            <Text style={styles.headerCell} />
           </View>
-        ))}
-      </View>
-    </ScrollView>
+          {history.map(historyItem => (
+              <View key={historyItem.id} style={styles.tableRow}>
+                <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">{historyItem.title}</Text>
+                <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">{historyItem.category}</Text>
+                <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">{historyItem.amount}€</Text>
+                <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">
+                  {historyItem.isRefunded === 'True' ? 'Remboursé' : 'Non remboursé'}
+                </Text>
+                <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">{historyItem.date}</Text>
+                <View style={styles.cell}>
+                  <Button
+                      title="Détails"
+                      onPress={() => toggleHistoryModal(historyItem.id)}
+                  />
+                  {/*<HistoryDetailsModal*/}
+                  {/*  historyItem={historyItem}*/}
+                  {/*  showDetailsModal={showHistoryModal}*/}
+                  {/*  toggleModal={toggleHistoryModal}*/}
+                  {/*/>*/}
+                </View>
+              </View>
+          ))}
+        </View>
+      </ScrollView>
   );
 };
 
@@ -109,7 +105,10 @@ const styles = StyleSheet.create({
   },
   headerCell: {
     flex: 1,
+    minWidth: 75,
     fontWeight: 'bold',
+    paddingHorizontal: 5,
+    textAlign: 'center',
   },
   tableRow: {
     flexDirection: 'row',
@@ -119,5 +118,9 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
+    flexWrap: 'nowrap',
+    paddingHorizontal: 5,
+    textAlign: 'center',
   },
 });
+
