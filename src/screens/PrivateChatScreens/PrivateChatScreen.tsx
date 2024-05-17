@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {axiosUtils} from '../../Utils/axiosUtils';
 import {Message} from '../../../Types';
 import {Chat} from '../../compoments/ChatCompoments/Chat.tsx';
@@ -86,13 +86,13 @@ export const PrivateChatScreen = ({route, navigation}) => {
       />
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.input}
+          style={styles.chatinput}
           value={newMessage}
           onChangeText={setNewMessage}
           placeholder="Tapez un message"
         />
-        <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-          <Text style={styles.sendButtonText}>Envoyer</Text>
+        <TouchableOpacity onPress={sendMessage} style={styles.btnsend}>
+          <Image source={require('../../assets/send.svg')} />
         </TouchableOpacity>
       </View>
     </View>
@@ -127,8 +127,47 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
   },
-  sendButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  sendButtonText: {},
+  chatmsg: {
+    flex: 1,
+    marginBottom: 10,
+  },
+  messageContainer: {
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: '#f4f4f4',
+    borderRadius: 10,
+  },
+  messageText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  chatinputcontainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f4f4f4',
+    borderRadius: 20,
+  },
+  chatinput: {
+    flex: 1,
+    borderWidth: 0,
+    padding: 10,
+    borderRadius: 20,
+    fontSize: 16,
+    color: '#333',
+    backgroundColor: '#fff',
+    marginRight: 10,
+  },
+  btnsend: {
+    padding: 10,
+    backgroundColor: '#9ACD32',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnsendHover: {
+    backgroundColor: '#fff',
+    transform: [{scale: 1.2}],
   },
 });

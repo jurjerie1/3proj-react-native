@@ -1,9 +1,9 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {GroupDetails} from '../../compoments/GroupCompoments/GroupDetail.tsx';
 import {NotificationsScreen} from '../../compoments/Notif.tsx';
 import {useNavigation} from '@react-navigation/native';
 import {History} from '../History/History.tsx';
+import {GroupDetails} from '../GroupDetail.tsx';
 
 const Drawer = createDrawerNavigator();
 
