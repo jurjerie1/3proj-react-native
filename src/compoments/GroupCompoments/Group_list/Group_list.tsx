@@ -265,6 +265,7 @@ const styles = StyleSheet.create({
   groupsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   groupCard: {
     flexBasis: '48%',
@@ -277,9 +278,6 @@ const styles = StyleSheet.create({
   cardImageContainer: {
     width: 150,
     height: 150,
-    borderRadius: 75,
-    borderWidth: 1,
-    borderColor: '#000',
     marginBottom: 20,
   },
   cardImage: {

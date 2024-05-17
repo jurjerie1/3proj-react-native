@@ -19,6 +19,7 @@ const App = () => {
           // Screens for authenticated users
           <Stack.Group screenOptions={{headerShown: false}}>
             <Stack.Screen name="Home" component={AuthenticatedTabs} />
+
             {/* Add GroupDetails here */}
           </Stack.Group>
         ) : (
