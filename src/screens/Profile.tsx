@@ -74,14 +74,17 @@ export const Profile = () => {
       });
     }
 
-    ApiPut('Users/updateProfile', formData)
+    ApiPut('Users/profile', formData)
       .then(response => {
         setProfile(response.data);
         setShowEditModal(false);
         setNewProfileImage(null);
       })
       .catch(error => {
-        console.error('Erreur lors de la mise à jour du profil:', error);
+        console.error(
+          'Erreur lors de la mise à jour du profil:',
+          error.message,
+        );
       });
   };
 
@@ -150,7 +153,7 @@ export const Profile = () => {
         </View>
         <View style={styles.profileinfosection}>
           <View style={styles.infofield}>
-            <Text style={styles.infotitle}>Email Address</Text>
+            <Text style={styles.infotitle}>Email</Text>
             <Text style={styles.info}>{profile.email}</Text>
           </View>
           <View style={styles.divider} />
