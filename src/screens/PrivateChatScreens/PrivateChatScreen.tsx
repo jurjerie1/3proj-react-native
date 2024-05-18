@@ -92,7 +92,7 @@ export const PrivateChatScreen = ({route, navigation}) => {
           placeholder="Tapez un message"
         />
         <TouchableOpacity onPress={sendMessage} style={styles.btnsend}>
-          <Image source={require('../../assets/send.svg')} />
+          <Image source={require('../../assets/send.png')} />
         </TouchableOpacity>
       </View>
     </View>
@@ -161,13 +161,9 @@ const styles = StyleSheet.create({
   },
   btnsend: {
     padding: 10,
-    backgroundColor: '#9ACD32',
+    backgroundColor: '#2cc4b5',
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  btnsendHover: {
-    backgroundColor: '#fff',
-    transform: [{scale: 1.2}],
   },
 });

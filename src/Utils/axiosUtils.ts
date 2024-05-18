@@ -42,9 +42,8 @@ export const axiosUtils = () => {
     headers: {
       accept: '*/*',
       // Authorization: `Bearer ${account.token}`,
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjEyMDJlZGY4LTczYWYtNDJjYS05YTNhLTM5MzJkNDJlZWU1NyIsImp0aSI6WyIxMjAyZWRmOC03M2FmLTQyY2EtOWEzYS0zOTMyZDQyZWVlNTciLCJlYTEwZGM5MC02NDdiLTQ0ODEtYWM3YS01Mzc5ZTM2ZTcxZmMiXSwiZW1haWwiOiJtb2JpbGUxQGVtYWlsLmNvbSIsIm5iZiI6MTcxNTk2NTg1MywiZXhwIjoxNzE1OTg3NDUzLCJpYXQiOjE3MTU5NjU4NTN9.yZ2hvjA1XC6ED_mhfS5LmcjuDVQsmCCmHAytGGqohhI
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImRlNjIwMjlmLTJmZGEtNDY3My1iNTdhLTkyZjVlODNjNmY2NyIsImp0aSI6WyJkZTYyMDI5Zi0yZmRhLTQ2NzMtYjU3YS05MmY1ZTgzYzZmNjciLCI1ZjUyN2I2OS1iZWVjLTQ4MjYtYmRhNS0yMjdiN2RkYTgxMDMiXSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwibmJmIjoxNzE2MDI0NjE5LCJleHAiOjE3MTYwNDYyMTksImlhdCI6MTcxNjAyNDYxOX0.otqGtz93K8IgrxsqEn-K4CPajJh401ku5gM8c-JOyzg
 `,
-
     },
   };
 
