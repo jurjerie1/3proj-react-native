@@ -42,9 +42,10 @@ export const axiosUtils = () => {
     headers: {
       accept: '*/*',
       // Authorization: `Bearer ${account.token}`,
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImRlNjIwMjlmLTJmZGEtNDY3My1iNTdhLTkyZjVlODNjNmY2NyIsImp0aSI6WyJkZTYyMDI5Zi0yZmRhLTQ2NzMtYjU3YS05MmY1ZTgzYzZmNjciLCJhZTk0NjMwMS0xMTMzLTRhNWQtOGE1NC03NThiYTRkMGFiOWYiXSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwibmJmIjoxNzE2MDIyODY0LCJleHAiOjE3MTYwNDQ0NjQsImlhdCI6MTcxNjAyMjg2NH0.MqYuGhutKVTwi4I2z09BjuFku3ZowSJ-5NQc5NeUYRE
-`,
 
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImRlNjIwMjlmLTJmZGEtNDY3My1iNTdhLTkyZjVlODNjNmY2NyIsImp0aSI6WyJkZTYyMDI5Zi0yZmRhLTQ2NzMtYjU3YS05MmY1ZTgzYzZmNjciLCI1ZjUyN2I2OS1iZWVjLTQ4MjYtYmRhNS0yMjdiN2RkYTgxMDMiXSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwibmJmIjoxNzE2MDI0NjE5LCJleHAiOjE3MTYwNDYyMTksImlhdCI6MTcxNjAyNDYxOX0.otqGtz93K8IgrxsqEn-K4CPajJh401ku5gM8c-JOyzg
+
+`,
     },
   };
 

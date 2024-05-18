@@ -3,8 +3,10 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NotificationsScreen} from '../../compoments/Notif.tsx';
 import {useNavigation} from '@react-navigation/native';
 import {History} from '../History/History.tsx';
+
 import {GroupDetails} from "../GroupDetail.tsx";
 import {GroupMessage} from '../../screens/GroupMessage/GroupMessage.tsx';
+
 
 const Drawer = createDrawerNavigator();
 
