@@ -1,5 +1,3 @@
-import {axiosUtils} from '../axiosUtils.ts';
-
 export const fetchStatistics = (
   ApiGet,
   setStatistic,
@@ -7,6 +5,7 @@ export const fetchStatistics = (
   setFormError,
 ) => {
   const queryParams = new URLSearchParams();
+
   if (filters.startDate) {
     queryParams.append('startDate', filters.startDate);
   }
@@ -17,7 +16,7 @@ export const fetchStatistics = (
     queryParams.append('category', filters.category);
   }
 
-  const url = `Expenses/user/statistics${queryParams.toString()}`;
+  const url = `Expenses/user/statistics?${queryParams.toString()}`;
 
   ApiGet(url)
     .then(response => {
