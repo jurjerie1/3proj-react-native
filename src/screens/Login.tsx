@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
-import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { UseAuth } from '../hooks/UseAuth';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { axiosUtils } from '../Utils/axiosUtils.ts';
+import React, {useState} from 'react';
+import {
+  Alert,
+  Button,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {UseAuth} from '../hooks/UseAuth';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {axiosUtils} from '../Utils/axiosUtils.ts';
 
-// Type pour la navigation
 type LoginScreenNavigationProp = NavigationProp<any, 'Register'>;
 
 export const Login = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('mobileMDP1!');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const { ApiPost } = axiosUtils();
+  const {ApiPost} = axiosUtils();
 
-  const { login } = UseAuth();
+  const {login} = UseAuth();
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const handlePasswordVisibility = () => {
@@ -26,13 +34,12 @@ export const Login = () => {
 
   const ForgotPassword = async (email: string) => {
     try {
-      console.log('Request Body:', { email });
       return await ApiPost('Users/forgot-password', {
         email: email,
       });
     } catch (error) {
       console.error('An unexpected error occurred:', error);
-      return { success: false, message: 'An unexpected error occurred.' };
+      return {success: false, message: 'An unexpected error occurred.'};
     }
   };
 
@@ -60,7 +67,7 @@ export const Login = () => {
   const sendForgotPasswordRequest = async () => {
     try {
       const result = await ForgotPassword(email);
-      if (result.status = 200) {
+      if ((result.status = 200)) {
         Alert.alert('Success', result.message);
       } else {
         Alert.alert('Error', 'An unexpected error occurred.');
@@ -72,73 +79,72 @@ export const Login = () => {
     }
   };
 
-
   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Login</Text>
-        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+      {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <View style={styles.passwordContainer}>
         <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
+          style={styles.passwordInput}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
         />
-        <View style={styles.passwordContainer}>
-          <TextInput
-              style={styles.passwordInput}
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity
-              onPress={handlePasswordVisibility}
-              style={styles.passwordToggle}>
-            <Text style={styles.toggleText}>
-              {showPassword ? 'Hide' : 'Show'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <Button title="Login" onPress={handleLogin} disabled={loading} />
-        <View style={styles.buttonContainer}>
-          <Button
-              title="Forgot Password"
-              onPress={handleForgotPassword}
-              disabled={loading}
-          />
-          <Button
-              title="Don't have an account? Register"
-              onPress={() => navigation.navigate('register')}
-          />
-        </View>
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(false);
-            }}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Forgot Password</Text>
-              <TextInput
-                  style={styles.modalInput}
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-              />
-              <View style={styles.modalButtons}>
-                <Button title="Cancel" onPress={() => setModalVisible(false)} />
-                <Button title="Send" onPress={sendForgotPasswordRequest} />
-              </View>
+        <TouchableOpacity
+          onPress={handlePasswordVisibility}
+          style={styles.passwordToggle}>
+          <Text style={styles.toggleText}>
+            {showPassword ? 'Hide' : 'Show'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <Button title="Login" onPress={handleLogin} disabled={loading} />
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Forgot Password"
+          onPress={handleForgotPassword}
+          disabled={loading}
+        />
+        <Button
+          title="Don't have an account? Register"
+          onPress={() => navigation.navigate('register')}
+        />
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Forgot Password</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <View style={styles.modalButtons}>
+              <Button title="Cancel" onPress={() => setModalVisible(false)} />
+              <Button title="Send" onPress={sendForgotPasswordRequest} />
             </View>
           </View>
-        </Modal>
-      </View>
+        </View>
+      </Modal>
+    </View>
   );
 };
 

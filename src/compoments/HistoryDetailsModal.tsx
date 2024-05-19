@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, Button, Image, Modal, StyleSheet} from 'react-native';
 import {jsPDF} from 'jspdf';
-import {Group, Refund} from '../../Types.ts'; // jsPDF might not be fully functional in React Native environment, consider using another library such as `react-native-pdf-lib`
+import {Group, Refund} from '../../Types.ts';
 
 interface HistoryItem {
   id: string;

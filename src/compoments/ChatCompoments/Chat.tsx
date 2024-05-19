@@ -2,10 +2,12 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Message} from '../../../Types';
 
+// Define the type for Chat component props
 type ChatProps = {
   messages: Message[];
 };
 
+// Define the Chat component as a functional React component
 export const Chat: React.FC<ChatProps> = ({messages}) => {
   return (
     <>

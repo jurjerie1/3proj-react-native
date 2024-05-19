@@ -11,10 +11,8 @@ type AccountState = {
 export const useAccountStore = create<AccountState>(set => ({
   account: null,
   setAccount: async (account: Account | null) => {
-    console.log('Setting account:', account);
     await AsyncStorage.setItem('account', JSON.stringify(account));
     set({account});
-    console.log('Account get:', await AsyncStorage.getItem('account'));
   },
   loadAccount: async () => {
     try {

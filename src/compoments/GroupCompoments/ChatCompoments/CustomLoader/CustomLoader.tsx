@@ -1,18 +1,18 @@
 import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
 
 export const CustomLoader = () => {
-    return (
-        <View style={styles.container}>
-            <ActivityIndicator size="large" color="#e15b64" />
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color="#e15b64" />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
