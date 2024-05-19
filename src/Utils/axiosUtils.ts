@@ -1,60 +1,64 @@
 import axios from 'axios';
-import {UseAccount} from '../hooks/UseAccount.ts';
-import {API_URL} from '../../config.ts';
+import {API_URL} from '../../config';
+import {useNavigation} from '@react-navigation/native';
+import {UseAuth} from '../hooks/UseAuth.ts';
 
 const axiosInstance = axios.create();
 
-// Response interceptor
-axiosInstance.interceptors.response.use(
-  response => {
-    // Handle successful response
-    return response;
-  },
-  error => {
-    // Handle response error
-    console.error('Response Error:', error);
-    if (error.response && error.response.status === 401) {
-      // Check if there's no response data
-      if (!error.response.data) {
-        // cas ou on est pas connecté
-        console.log(
-          'Unauthorized access detected with no response data. Redirecting to login page...',
-        );
+// Create a custom hook to handle axios setup and interceptors
+const useAxiosSetup = () => {
+  const {logout} = UseAuth();
+  const navigation = useNavigation();
 
-        // localStorage.removeItem('account');
-        // window.location.href = '/login';
-      } else {
-        // cas ou on est connecté mais on a pas les droits
-        console.log(
-          'Unauthorized access detected with response data:',
-          error.response.data,
-        );
+  axiosInstance.interceptors.response.use(
+    response => {
+      // Handle successful response
+      return response;
+    },
+    error => {
+      // Handle response error
+      console.error('Response Error:', error);
+      if (error.response && error.response.status === 401) {
+        // Check if there's no response data
+        if (!error.response.data) {
+          // Case where the user is not logged in
+          logout();
+          console.log(
+            'Unauthorized access detected with no response data. Redirecting to login page...',
+          );
+          navigation.navigate('Login'); // Redirect to login page
+        } else {
+          // Case where the user is logged in but lacks proper authorization
+          console.log(
+            'Unauthorized access detected with response data:',
+            error.response.data,
+          );
+        }
       }
-    }
-    return Promise.reject(error);
-  },
-);
+      return Promise.reject(error);
+    },
+  );
+};
 
 export const axiosUtils = () => {
-  //const {account} = UseAccount();
+  const {account} = UseAuth();
+  useAxiosSetup(); // Ensure interceptors are set up
 
+  // Dynamic configuration for headers, including token from account state
   const config = {
     headers: {
-      accept: '*/*',
-      // Authorization: `Bearer ${account.token}`,
-
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImRlNjIwMjlmLTJmZGEtNDY3My1iNTdhLTkyZjVlODNjNmY2NyIsImp0aSI6WyJkZTYyMDI5Zi0yZmRhLTQ2NzMtYjU3YS05MmY1ZTgzYzZmNjciLCJjZjMzZjE4MS02YTY4LTQ0N2QtODA1Mi02ZmJhYTRiZGUzNmMiXSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwibmJmIjoxNzE2MDQ3MTY2LCJleHAiOjE3MTYwNjg3NjYsImlhdCI6MTcxNjA0NzE2Nn0.CJXZ4mYCCSPrW5xRFlRxhBbfzZfmBnFoX_d4axW2m7c
-
-`,
+      Accept: '*/*',
+      Authorization: `Bearer ${account?.token}`,
     },
   };
 
   return {
-    ApiGet: (url: string) => axiosInstance.get(API_URL + url, config),
+    ApiGet: (url: string) => axiosInstance.get(`${API_URL}${url}`, config),
     ApiPost: (url: string, data: unknown) =>
-      axiosInstance.post(API_URL + url, data, config),
+      axiosInstance.post(`${API_URL}${url}`, data, config),
     ApiPut: (url: string, data: unknown) =>
-      axiosInstance.put(API_URL + url, data, config),
-    ApiDelete: (url: string) => axiosInstance.delete(API_URL + url, config),
+      axiosInstance.put(`${API_URL}${url}`, data, config),
+    ApiDelete: (url: string) =>
+      axiosInstance.delete(`${API_URL}${url}`, config),
   };
 };
