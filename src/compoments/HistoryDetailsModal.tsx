@@ -1,83 +1,101 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Button, Image, Modal, StyleSheet} from 'react-native';
+import {jsPDF} from 'jspdf';
+import {Group, Refund} from '../../Types.ts'; // jsPDF might not be fully functional in React Native environment, consider using another library such as `react-native-pdf-lib`
 
-interface HistoryDetailsModal {
-  historyItem: {
-    id: string;
-    title: string;
-    team: {name: string};
-    category: string;
-    amount: number;
-    refunds: {user: {userName: string}; amount: number}[];
-    justificatif?: string;
-  };
+interface HistoryItem {
+  id: string;
+  title: string;
+  team: Group;
+  category: string;
+  amount: number;
+  refunds: Refund[];
+  justificatif: string;
+}
+
+interface Props {
+  historyItem: HistoryItem;
   showDetailsModal: {[key: string]: boolean};
   toggleModal: (id: string) => void;
 }
 
-export const HistoryDetailsModal: React.FC<HistoryDetailsModalProps> = ({
+export const HistoryDetailsModal: React.FC<Props> = ({
   historyItem,
   showDetailsModal,
   toggleModal,
 }) => {
   if (!showDetailsModal[historyItem.id]) return null;
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    doc.text(`Nom: ${historyItem.title}`, 10, 10);
+    doc.text(`Groupe: ${historyItem.team.name}`, 10, 20);
+    doc.text(`Catégorie: ${historyItem.category}`, 10, 30);
+    doc.text(`Montant total: ${historyItem.amount}€`, 10, 40);
+    doc.text('Membres:', 10, 50);
+
+    historyItem.refunds.forEach((refund, index) => {
+      doc.text(
+        `${refund.user.userName}: ${refund.amount}€`,
+        10,
+        60 + index * 10,
+      );
+    });
+
+    if (historyItem.justificatif) {
+      doc.addPage();
+      doc.text('Justificatif:', 10, 10);
+      doc.addImage(historyItem.justificatif, 'JPEG', 15, 20, 180, 160);
+    }
+
+    doc.save(`${historyItem.title}_details.pdf`);
+  };
+
   return (
     <Modal
-      visible={showDetailsModal[historyItem.id]}
+      visible={!!showDetailsModal[historyItem.id]}
+      onRequestClose={() => toggleModal(historyItem.id)}
       transparent={true}
       animationType="slide">
-      <View style={styles.modalContainer}>
+      <View style={styles.modal}>
         <View style={styles.modalContent}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Détails de la transaction</Text>
-            <Button
-              title="Fermer"
-              onPress={() => toggleModal(historyItem.id)}
-            />
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Détails de la transaction</Text>
+            <Button title="Close" onPress={() => toggleModal(historyItem.id)} />
           </View>
-          <ScrollView>
-            <View style={styles.body}>
-              <View style={styles.section}>
+          <View style={styles.modalBody}>
+            <View style={styles.flexRow}>
+              <View style={styles.column}>
                 <Text>Nom: {historyItem.title}</Text>
                 <Text>Groupe: {historyItem.team.name}</Text>
                 <Text>Catégorie: {historyItem.category}</Text>
                 <Text>Montant total: {historyItem.amount}€</Text>
-                <Text>
-                  Status :{' '}
-                  {historyItem.isRefunded === 'True'
-                    ? 'Remboursé'
-                    : 'Non remboursé'}{' '}
-                </Text>
                 <Text>Membres:</Text>
-                <View>
-                  {historyItem.refunds.map((refund, index) => (
-                    <Text key={index}>
-                      {refund.user.userName}: {refund.amount}€
-                    </Text>
-                  ))}
-                </View>
+                {historyItem.refunds.map((refund, index) => (
+                  <Text key={index}>
+                    {refund.user.userName}: {refund.amount}€
+                  </Text>
+                ))}
               </View>
-              <View style={styles.section}>
+              <View style={styles.column}>
                 <Text>Justificatif:</Text>
-                {historyItem.justificatif && (
+                {historyItem.justificatif ? (
                   <Image
                     style={styles.image}
                     source={{uri: historyItem.justificatif}}
                   />
-                )}
+                ) : null}
               </View>
             </View>
-          </ScrollView>
+          </View>
+          <View style={styles.modalFooter}>
+            <Button
+              title="Fermer"
+              onPress={() => toggleModal(historyItem.id)}
+            />
+            <Button title="Télécharger PDF" onPress={generatePDF} />
+          </View>
         </View>
       </View>
     </Modal>
@@ -85,46 +103,45 @@ export const HistoryDetailsModal: React.FC<HistoryDetailsModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  modal: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '90%',
     backgroundColor: 'white',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  header: {
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderRadius: 10,
+    width: '90%',
+  },
+  modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 18,
+  modalTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
   },
-  body: {
-    padding: 20,
+  modalBody: {
+    marginTop: 10,
   },
-  section: {
-    marginBottom: 20,
+  flexRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  column: {
+    flex: 1,
+  },
+  modalFooter: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   image: {
-    width: '100%',
+    width: 200,
     height: 200,
-    resizeMode: 'contain',
-  },
-  footer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    resizeMode: 'cover',
   },
 });

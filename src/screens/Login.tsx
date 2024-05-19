@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Button,
+  Image,
 } from 'react-native';
 import {UseAuth} from '../hooks/UseAuth';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -47,6 +48,10 @@ export const Login = () => {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={'../../assets/splitwise.png'}
+        style={{width: 200, height: 200}}
+      />
       <Text style={styles.title}>Login</Text>
       {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       <TextInput
