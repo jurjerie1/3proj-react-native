@@ -70,38 +70,54 @@ export const UseAuth = () => {
     [setAccount],
   );
   const register = useCallback(
-    async (
-      email: string,
-      password: string,
-      firstName: string,
-      lastName: string,
-      dateOfBirth: Date,
-      passwordConfirmation: string,
-      userName: string,
-    ) => {
-      try {
-        const response = await axios.post(`${API_URL}Users/register`, {
-          email,
-          firstName,
-          lastName,
-          dateOfBirth,
-          password,
-          passwordConfirmation,
-          userName,
-        });
-        return {success: true, message: 'Inscription réussie!'};
-      } catch (error: any) {
-        return {
-          success: false,
-          message:
-            error.response?.data?.error ||
-            error.response?.data ||
-            "Erreur d'inscription!",
-        };
-      }
-    },
-    [],
+      async (
+          email: string,
+          password: string,
+          firstName: string,
+          lastName: string,
+          dateOfBirth: Date,
+          passwordConfirmation: string,
+          userName: string,
+      ) => {
+        try {
+          // Log the data being sent to the API
+          console.log('Data being sent to API:', {
+            email,
+            firstName,
+            lastName,
+            dateOfBirth,
+            password,
+            passwordConfirmation,
+            userName,
+          });
+
+          // Make the API request
+          const response = await axios.post(`${API_URL}Users/register`, {
+            email,
+            firstName,
+            lastName,
+            dateOfBirth,
+            password,
+            passwordConfirmation,
+            userName,
+          });
+
+          console.log('Registration successful:', response.data);
+          return {success: true, message: 'Inscription réussie!'};
+        } catch (error: any) {
+          console.error('Registration error:', error);
+          return {
+            success: false,
+            message:
+                error.response?.data?.error ||
+                error.response?.data ||
+                "Erreur d'inscription!",
+          };
+        }
+      },
+      [],
   );
+
 
   const logout = () => {
     setAccount(null);

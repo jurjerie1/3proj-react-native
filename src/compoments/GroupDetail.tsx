@@ -12,10 +12,10 @@ import {
 import { Group } from '../../Types';
 import { axiosUtils } from '../Utils/axiosUtils';
 import DocumentPicker from 'react-native-document-picker';
-import {createExpense} from "../Utils/GestionMethods/createExpense.tsx";
+import { createExpense } from "../Utils/GestionMethods/createExpense.tsx";
 
 export const GroupDetails = ({ group }: { group: Group }) => {
-    const { ApiGet, ApiPost, ApiPutCustom,ApiPostCustom } = axiosUtils();
+    const { ApiGet, ApiPost, ApiPutCustom, ApiPostCustom } = axiosUtils();
     const [modalVisible, setModalVisible] = useState(false);
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [title, setTitle] = useState('');
@@ -92,7 +92,6 @@ export const GroupDetails = ({ group }: { group: Group }) => {
         }
     };
 
-
     const sendInviteRequest = async (userId: string) => {
         try {
             const response = await ApiPost(`Invitations/invite/${group.id}`, {
@@ -130,7 +129,7 @@ export const GroupDetails = ({ group }: { group: Group }) => {
                 amount,
                 category,
                 justificatif,
-                validParticipants, // Passer les ID utilisateur des participants ici
+                validParticipants,
                 () => setModalVisible(false),
                 setFormError,
                 setHistory,
@@ -140,7 +139,6 @@ export const GroupDetails = ({ group }: { group: Group }) => {
             setFormError('Error processing form. Please try again.');
         }
     };
-
 
     const handleJustificatifChange = async () => {
         try {
@@ -193,7 +191,7 @@ export const GroupDetails = ({ group }: { group: Group }) => {
         try {
             const response = await ApiPutCustom(`Teams/${group.id}`, formData);
             setEditGroupModalVisible(false);
-            fetchGroup();  // Update group details after successful PUT request
+            fetchGroup();
         } catch (error) {
             if (error.response) {
                 console.error('Error response:', error.response.data);
@@ -352,53 +350,53 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f7f7f7', // light grey background
+        backgroundColor: '#f7f7f7',
         padding: 20,
     },
     header: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#333', // dark grey text
+        color: '#333',
         marginBottom: 10,
     },
     groupName: {
-        fontSize: 22, // Large font size for group name
+        fontSize: 22,
         fontWeight: '600',
-        color: '#444', // medium grey text
+        color: '#444',
         marginBottom: 10,
         textAlign: 'center',
     },
     groupDescription: {
-        fontSize: 16, // Smaller font size for description
-        color: '#555', // dark grey text
+        fontSize: 16,
+        color: '#555',
         marginBottom: 20,
         textAlign: 'center',
     },
     addButton: {
-        backgroundColor: '#007bff', // blue background
+        backgroundColor: '#007bff',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 20, // Add space between description and button
+        marginTop: 20,
     },
     addButtonText: {
-        color: '#fff', // white text color
+        color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
     },
     editButton: {
-        backgroundColor: '#28a745', // green background
+        backgroundColor: '#28a745',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 20, // Add space between buttons
+        marginTop: 20,
     },
     editButtonText: {
-        color: '#fff', // white text color
+        color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
     },
