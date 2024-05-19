@@ -19,3 +19,4 @@ export const fetchCategories = async (ApiGet, setCategories) => {
         setFormError(`Erreur lors de la récupération des catégories: ${error.message}`);
     }
 };
+

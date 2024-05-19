@@ -1,8 +1,7 @@
 import axios from 'axios';
 import {API_URL} from '../../config';
 import {useAccountStore} from './UseAccountStore.ts';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {useEffect} from 'react';
+import {useCallback} from 'react';
 
 export enum AuthStatus {
   UNKNOWN,
@@ -12,7 +11,6 @@ export enum AuthStatus {
 
 export const UseAuth = () => {
   const {account, setAccount} = useAccountStore();
-  // const navigation = useNavigation<NavigationProp<any>>();
 
   let status;
   switch (account) {
@@ -27,27 +25,7 @@ export const UseAuth = () => {
       break;
   }
 
-  // useEffect(() => {
-  //   const checkAuthentication = async () => {
-  //     try {
-  //       const response = await axios.get(`${API_URL}checkAuthentication`);
-  //       if (response.data.success) {
-  //         setAccount({
-  //           user: response.data.user,
-  //           token: response.data.token,
-  //         });
-  //       } else {
-  //         setAccount(null);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error checking authentication:', error);
-  //       setAccount(null);
-  //     }
-  //   };
-  //   checkAuthentication();
-  // }, [setAccount]);
-
-  const login = async (email: string, password: string) => {
+  const login = async (email, password) => {
     try {
       const response = await axios.post(`${API_URL}Users/login`, {
         email,
@@ -58,7 +36,6 @@ export const UseAuth = () => {
           user: response.data.user,
           token: response.data.token,
         });
-        // navigation.navigate('Home');
         return {success: true, message: 'Login successful'};
       } else {
         return {success: false, message: 'Missing token or user information'};
@@ -68,12 +45,71 @@ export const UseAuth = () => {
     }
   };
 
+  const loginWithGoogle = useCallback(
+    async (token: string | undefined) => {
+      try {
+        const response = await axios.post(API_URL + 'Users/loginWithGoogle', {
+          credential: token,
+        });
+        setAccount({
+          user: response.data.user,
+          token: response.data.token,
+        });
+        return {success: true, message: 'Connexion avec Google réussie!'};
+      } catch (error: any) {
+        setAccount(null);
+        return {
+          success: false,
+          message:
+            error.response?.data?.error ||
+            error.response?.data ||
+            'Erreur de connexion avec Google!',
+        };
+      }
+    },
+    [setAccount],
+  );
+  const register = useCallback(
+    async (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+      dateOfBirth: Date,
+      passwordConfirmation: string,
+      userName: string,
+    ) => {
+      try {
+        const response = await axios.post(`${API_URL}Users/register`, {
+          email,
+          firstName,
+          lastName,
+          dateOfBirth,
+          password,
+          passwordConfirmation,
+          userName,
+        });
+        return {success: true, message: 'Inscription réussie!'};
+      } catch (error: any) {
+        return {
+          success: false,
+          message:
+            error.response?.data?.error ||
+            error.response?.data ||
+            "Erreur d'inscription!",
+        };
+      }
+    },
+    [],
+  );
+
   const logout = () => {
     setAccount(null);
-    // navigation.navigate('login');
   };
 
   return {
+    loginWithGoogle,
+    register,
     status,
     account,
     login,

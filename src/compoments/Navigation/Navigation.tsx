@@ -8,6 +8,7 @@ import {ContactScreen} from '../../screens/PrivateChatScreens/ContactScreen.tsx'
 import {Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {NavigationPrivateChat} from './NavigationPrivateChat.tsx';
+import {NavigationHistoriqueUser} from './NavigationHistoriqueUser.tsx';
 
 export const Navigation = () => {
   const Stack = createStackNavigator();
@@ -50,11 +51,24 @@ export const Navigation = () => {
           }}
         />
         <Tab.Screen
+          name="HistorricUser"
+          component={NavigationHistoriqueUser}
+          options={{
+            title: 'Historique',
+            tabBarIcon: ({focused, color, size}) => (
+              <Image
+                source={require('../../assets/historique.png')}
+                style={{width: size, height: size, tintColor: color}}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
           name="PrivateChat"
           component={NavigationPrivateChat}
           options={{
             title: 'Messages',
-            tabBarBadge: 3,
+            // tabBarBadge: 3,
             tabBarIcon: ({focused, color, size}) => (
               <Image
                 source={require('../../assets/chat.png')}

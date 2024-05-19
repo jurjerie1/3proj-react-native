@@ -16,6 +16,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {axiosUtils} from '../Utils/axiosUtils.ts';
 import {API_URL_IMAGE} from '../../config.ts';
+import {UseAccount} from '../hooks/UseAccount.ts';
+import {useNavigation} from '@react-navigation/native';
+import {UseAuth} from '../hooks/UseAuth.ts';
 
 export const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
@@ -31,6 +34,13 @@ export const Profile = () => {
   const [newProfileImage, setNewProfileImage] = useState<string | null>(null);
 
   const {ApiGet, ApiPut} = axiosUtils();
+  const {logout} = UseAuth();
+  const navigation = useNavigation();
+
+  const handleLogout = () => {
+    logout();
+    navigation.navigate('login');
+  };
 
   useEffect(() => {
     ApiGet('Users/profile')
@@ -40,8 +50,8 @@ export const Profile = () => {
           userName: response.data.userName,
           firstName: response.data.firstName,
           lastName: response.data.lastName,
-          dateOfBirth: '', // Valeur vide ou valeur par défaut
-          languagePreference: '', // Valeur vide ou valeur par défaut
+          dateOfBirth: response.data.dateOfBirth || '', // Initialize with actual date of birth
+          languagePreference: response.data.languagePreference || '', // Initialize with actual language preference
           profileImage: null,
         });
       })
@@ -59,13 +69,11 @@ export const Profile = () => {
 
   const handleEditProfileSubmit = () => {
     const formData = new FormData();
+
     Object.keys(editProfile).forEach(key => {
-      if (key === 'profileImage' && typeof editProfile[key] === 'string') {
-        formData.append(key, editProfile[key]);
-      } else {
-        formData.append(key, editProfile[key]);
-      }
+      formData.append(key, editProfile[key]);
     });
+
     if (newProfileImage) {
       formData.append('profileImage', {
         uri: newProfileImage,
@@ -74,29 +82,32 @@ export const Profile = () => {
       });
     }
 
-    ApiPut('Users/updateProfile', formData)
+    ApiPut('Users/profile', formData)
       .then(response => {
         setProfile(response.data);
         setShowEditModal(false);
         setNewProfileImage(null);
       })
       .catch(error => {
-        console.error('Erreur lors de la mise à jour du profil:', error);
+        console.error(
+          'Erreur lors de la mise à jour du profil:',
+          error.response.data,
+        );
+        Alert.alert('Erreur', 'La mise à jour du profil a échoué.');
       });
   };
 
-  const requestCameraPermission = async () => {
-    const result = await request(PERMISSIONS.ANDROID.CAMERA);
-    return result === RESULTS.GRANTED;
-  };
-
-  const requestLibraryPermission = async () => {
-    const result = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+  const requestPermission = async (permission: any) => {
+    const result = await request(permission);
     return result === RESULTS.GRANTED;
   };
 
   const handleTakePhoto = async () => {
-    const granted = await requestCameraPermission();
+    const permission =
+      Platform.OS === 'android'
+        ? PERMISSIONS.ANDROID.CAMERA
+        : PERMISSIONS.IOS.CAMERA;
+    const granted = await requestPermission(permission);
     if (granted) {
       launchCamera({}, response => {
         if (response.didCancel || response.errorCode) {
@@ -115,7 +126,11 @@ export const Profile = () => {
   };
 
   const handleSelectPhoto = async () => {
-    const granted = await requestLibraryPermission();
+    const permission =
+      Platform.OS === 'android'
+        ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+        : PERMISSIONS.IOS.PHOTO_LIBRARY;
+    const granted = await requestPermission(permission);
     if (granted) {
       launchImageLibrary({}, response => {
         if (response.didCancel || response.errorCode) {
@@ -150,7 +165,7 @@ export const Profile = () => {
         </View>
         <View style={styles.profileinfosection}>
           <View style={styles.infofield}>
-            <Text style={styles.infotitle}>Email Address</Text>
+            <Text style={styles.infotitle}>Email</Text>
             <Text style={styles.info}>{profile.email}</Text>
           </View>
           <View style={styles.divider} />
@@ -231,6 +246,9 @@ export const Profile = () => {
           </View>
         </View>
       </Modal>
+      <View>
+        <Button title="Logout" onPress={handleLogout} />
+      </View>
     </ScrollView>
   );
 };

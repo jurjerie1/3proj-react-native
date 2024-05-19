@@ -8,6 +8,8 @@ import { GroupMessage } from '../../screens/Groups/GroupMessage.tsx';
 import { Members } from "../../screens/Groups/Members.tsx";
 import {Soldes} from "../../screens/Groups/Soldes.tsx";
 
+
+
 const Drawer = createDrawerNavigator();
 
 export const NavigationGroup = ({ route }) => {
