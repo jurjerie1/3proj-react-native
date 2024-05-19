@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {axiosUtils} from '../../Utils/axiosUtils';
-import {Message} from '../../../Types';
+import {axiosUtils} from '../../Utils/axiosUtils.ts';
+import {Message} from '../../../Types.ts';
 import {Chat} from '../../compoments/ChatCompoments/Chat.tsx';
 
 export const GroupMessage = ({route, navigation}) => {

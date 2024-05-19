@@ -52,13 +52,18 @@ export const axiosUtils = () => {
     },
   };
 
+
   return {
     ApiGet: (url: string) => axiosInstance.get(`${API_URL}${url}`, config),
     ApiPost: (url: string, data: unknown) =>
-      axiosInstance.post(`${API_URL}${url}`, data, config),
+      axiosInstance.post(API_URL + url, data, config),
+    ApiPostCustom: (url: string, data: unknown) =>
+        axiosInstance.post(API_URL + url, data, customConfig),
     ApiPut: (url: string, data: unknown) =>
-      axiosInstance.put(`${API_URL}${url}`, data, config),
-    ApiDelete: (url: string) =>
-      axiosInstance.delete(`${API_URL}${url}`, config),
+      axiosInstance.put(API_URL + url, data, config),
+    ApiPutCustom: (url: string, data: unknown) =>
+        axiosInstance.put(API_URL + url, data, customConfig),
+    ApiDelete: (url: string) => axiosInstance.delete(API_URL + url, config),
+
   };
 };
