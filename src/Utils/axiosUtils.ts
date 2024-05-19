@@ -42,18 +42,29 @@ export const axiosUtils = () => {
     headers: {
       accept: '*/*',
       // Authorization: `Bearer ${account.token}`,
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImRlNjIwMjlmLTJmZGEtNDY3My1iNTdhLTkyZjVlODNjNmY2NyIsImp0aSI6WyJkZTYyMDI5Zi0yZmRhLTQ2NzMtYjU3YS05MmY1ZTgzYzZmNjciLCJhZTk0NjMwMS0xMTMzLTRhNWQtOGE1NC03NThiYTRkMGFiOWYiXSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwibmJmIjoxNzE2MDIyODY0LCJleHAiOjE3MTYwNDQ0NjQsImlhdCI6MTcxNjAyMjg2NH0.MqYuGhutKVTwi4I2z09BjuFku3ZowSJ-5NQc5NeUYRE
-`,
-
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImRlNjIwMjlmLTJmZGEtNDY3My1iNTdhLTkyZjVlODNjNmY2NyIsImp0aSI6WyJkZTYyMDI5Zi0yZmRhLTQ2NzMtYjU3YS05MmY1ZTgzYzZmNjciLCI2Y2MwZjRiOS0zMjY4LTRiNjYtYWFmYy1hMGU4ZjU5NjQzZTciXSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwibmJmIjoxNzE2MTI1OTcxLCJleHAiOjE3MTYxNDc1NzEsImlhdCI6MTcxNjEyNTk3MX0.QJ_uWZuaUiB6UDg5qIwTON2b8_-kZO5VXwaNaBDx3bs`,
     },
   };
+
+  const customConfig = {
+    headers: {
+      accept: '*/*',
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImRlNjIwMjlmLTJmZGEtNDY3My1iNTdhLTkyZjVlODNjNmY2NyIsImp0aSI6WyJkZTYyMDI5Zi0yZmRhLTQ2NzMtYjU3YS05MmY1ZTgzYzZmNjciLCI2Y2MwZjRiOS0zMjY4LTRiNjYtYWFmYy1hMGU4ZjU5NjQzZTciXSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwibmJmIjoxNzE2MTI1OTcxLCJleHAiOjE3MTYxNDc1NzEsImlhdCI6MTcxNjEyNTk3MX0.QJ_uWZuaUiB6UDg5qIwTON2b8_-kZO5VXwaNaBDx3bs`,
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
 
   return {
     ApiGet: (url: string) => axiosInstance.get(API_URL + url, config),
     ApiPost: (url: string, data: unknown) =>
       axiosInstance.post(API_URL + url, data, config),
+    ApiPostCustom: (url: string, data: unknown) =>
+        axiosInstance.post(API_URL + url, data, customConfig),
     ApiPut: (url: string, data: unknown) =>
       axiosInstance.put(API_URL + url, data, config),
+    ApiPutCustom: (url: string, data: unknown) =>
+        axiosInstance.put(API_URL + url, data, customConfig),
     ApiDelete: (url: string) => axiosInstance.delete(API_URL + url, config),
   };
 };

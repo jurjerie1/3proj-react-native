@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Text,
     View,
@@ -9,30 +9,44 @@ import {
     Button,
     ScrollView,
 } from 'react-native';
-import { Group } from '../../Types.ts';
-import { axiosUtils } from '../Utils/axiosUtils.ts';
-import { createExpense } from '../Utils/GestionMethods/createExpense.tsx'; // Import the createExpense function
-import DocumentPicker from 'react-native-document-picker'; // Import DocumentPicker
+import { Group } from '../../Types';
+import { axiosUtils } from '../Utils/axiosUtils';
+import DocumentPicker from 'react-native-document-picker';
+import {createExpense} from "../Utils/GestionMethods/createExpense.tsx";
 
 export const GroupDetails = ({ group }: { group: Group }) => {
-    const { ApiGet, ApiPost } = axiosUtils();
+    const { ApiGet, ApiPost, ApiPutCustom,ApiPostCustom } = axiosUtils();
     const [modalVisible, setModalVisible] = useState(false);
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Adjust the date format
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [title, setTitle] = useState('');
     const [amount, setAmount] = useState('');
     const [participants, setParticipants] = useState('');
     const [justificatif, setJustificatif] = useState(null);
     const [category, setCategory] = useState('');
     const [formError, setFormError] = useState('');
-    const [history, setHistory] = useState([]); // Assuming you need to manage history
+    const [history, setHistory] = useState([]);
     const [memberModalVisible, setMemberModalVisible] = useState(false);
     const [newMember, setNewMember] = useState('');
     const [inviteModalVisible, setInviteModalVisible] = useState(false);
     const [inviteError, setInviteError] = useState('');
     const [inviteSuccess, setInviteSuccess] = useState('');
+    const [editGroupModalVisible, setEditGroupModalVisible] = useState(false);
+    const [groupName, setGroupName] = useState(group.name);
+    const [groupDescription, setGroupDescription] = useState(group.description);
+    const [groupImage, setGroupImage] = useState(null);
+    const [groupDetails, setGroupDetails] = useState<Group | null>(group);
 
     const handleAddExpense = () => {
         setModalVisible(true);
+    };
+
+    const fetchGroup = async () => {
+        try {
+            const response = await ApiGet("Teams/" + group.id);
+            setGroupDetails(response.data);
+        } catch (error) {
+            console.error('Error fetching group details:', error);
+        }
     };
 
     const handleAddMember = () => {
@@ -51,9 +65,7 @@ export const GroupDetails = ({ group }: { group: Group }) => {
 
     const handleSendInvite = async () => {
         try {
-            console.log(newMember)
             const userId = await fetchUserId(newMember);
-            console.log(userId)
             if (!userId) {
                 throw new Error('User not found');
             }
@@ -68,16 +80,11 @@ export const GroupDetails = ({ group }: { group: Group }) => {
         }
     };
 
-    const fetchUserId = async (username) => {
+    const fetchUserId = async (username: string) => {
         try {
-            const response = await ApiPost('Users/search', {
-                query: username,
-                teamId: "",
-                includeTeamMembers: true,
-                limit: 20
-            });
-            const users = response.data; // Assume this is an array of user objects
-            const user = users.find(user => user.userName === username);
+            const response = await ApiGet(`/Teams/${group.id}/users`);
+            const users = response.data;
+            const user = users.find((user: any) => user.userName === username);
             return user ? user.id : null;
         } catch (error) {
             console.error(`Error fetching user ID for ${username}:`, error);
@@ -86,7 +93,7 @@ export const GroupDetails = ({ group }: { group: Group }) => {
     };
 
 
-    const sendInviteRequest = async (userId) => {
+    const sendInviteRequest = async (userId: string) => {
         try {
             const response = await ApiPost(`Invitations/invite/${group.id}`, {
                 userIds: [userId]
@@ -99,13 +106,10 @@ export const GroupDetails = ({ group }: { group: Group }) => {
     };
 
     const handleFormSubmit = async () => {
-        // Parse participants string into array of usernames
         const participantUsernames = participants
             .split(',')
             .map(participant => participant.trim());
-
         try {
-            // Fetch user IDs for all participants
             const parsedParticipants = await Promise.all(
                 participantUsernames.map(async username => {
                     const userId = await fetchUserId(username);
@@ -113,24 +117,12 @@ export const GroupDetails = ({ group }: { group: Group }) => {
                 }),
             );
 
-            // Filter out participants where userId could not be fetched
             const validParticipants = parsedParticipants.filter(
                 p => p.UserId !== null,
             );
 
-            // Log the form data
-            console.log('Form Data:', {
-                date,
-                title,
-                amount,
-                participants: validParticipants,
-                category,
-                justificatif,
-            });
-
-            // Create expense
             createExpense(
-                ApiPost,
+                ApiPostCustom,
                 ApiGet,
                 group,
                 date,
@@ -138,8 +130,8 @@ export const GroupDetails = ({ group }: { group: Group }) => {
                 amount,
                 category,
                 justificatif,
-                validParticipants,
-                () => setModalVisible(false), // toggleCreateExpenseModal
+                validParticipants, // Passer les ID utilisateur des participants ici
+                () => setModalVisible(false),
                 setFormError,
                 setHistory,
             );
@@ -148,6 +140,7 @@ export const GroupDetails = ({ group }: { group: Group }) => {
             setFormError('Error processing form. Please try again.');
         }
     };
+
 
     const handleJustificatifChange = async () => {
         try {
@@ -164,16 +157,68 @@ export const GroupDetails = ({ group }: { group: Group }) => {
         }
     };
 
+    const handleEditGroup = () => {
+        setEditGroupModalVisible(true);
+    };
+
+    const handleGroupImageChange = async () => {
+        try {
+            const res = await DocumentPicker.pick({
+                type: [DocumentPicker.types.images],
+            });
+            setGroupImage(res[0]);
+        } catch (err) {
+            if (DocumentPicker.isCancel(err)) {
+                // User cancelled the picker
+            } else {
+                throw err;
+            }
+        }
+    };
+
+    const handleGroupSubmit = async () => {
+        const formData = new FormData();
+        formData.append('Name', groupName);
+        formData.append('Description', groupDescription);
+        if (groupImage) {
+            formData.append('Image', {
+                uri: groupImage.uri,
+                type: groupImage.type,
+                name: groupImage.name,
+            });
+        } else {
+            formData.append('Image', ''); // Explicitly set the image field to empty if no image is provided
+        }
+
+        try {
+            const response = await ApiPutCustom(`Teams/${group.id}`, formData);
+            setEditGroupModalVisible(false);
+            fetchGroup();  // Update group details after successful PUT request
+        } catch (error) {
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+            } else {
+                console.error('General error:', error.message);
+            }
+            console.error('Error updating group:', error);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Group Details</Text>
-            <Text style={styles.groupName}>{group.name}</Text>
-            <Text style={styles.groupDescription}>{group.description}</Text>
+            <Text style={styles.groupName}>{groupDetails?.name}</Text>
+            <Text style={styles.groupDescription}>{groupDetails?.description}</Text>
             <TouchableOpacity style={styles.addButton} onPress={handleAddExpense}>
                 <Text style={styles.addButtonText}>Ajouter une dépense</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.addButton} onPress={handleInviteMember}>
                 <Text style={styles.addButtonText}>Inviter un membre</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.editButton} onPress={handleEditGroup}>
+                <Text style={styles.editButtonText}>Modifier le groupe</Text>
             </TouchableOpacity>
 
             <Modal
@@ -235,6 +280,7 @@ export const GroupDetails = ({ group }: { group: Group }) => {
                     </View>
                 </View>
             </Modal>
+
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -257,6 +303,42 @@ export const GroupDetails = ({ group }: { group: Group }) => {
                                 onPress={() => setInviteModalVisible(false)}
                             />
                             <Button title="Inviter" onPress={handleSendInvite} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={editGroupModalVisible}
+                onRequestClose={() => setEditGroupModalVisible(false)}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalTitle}>Modifier le groupe</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Nom du groupe"
+                            value={groupName}
+                            onChangeText={setGroupName}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Description du groupe"
+                            value={groupDescription}
+                            onChangeText={setGroupDescription}
+                        />
+                        <Button
+                            title="Choisir une image"
+                            onPress={handleGroupImageChange}
+                        />
+                        {groupImage ? <Text>{groupImage.name}</Text> : null}
+                        <View style={styles.buttonRow}>
+                            <Button
+                                title="Annuler"
+                                onPress={() => setEditGroupModalVisible(false)}
+                            />
+                            <Button title="Enregistrer" onPress={handleGroupSubmit} />
                         </View>
                     </View>
                 </View>
@@ -302,6 +384,20 @@ const styles = StyleSheet.create({
         marginTop: 20, // Add space between description and button
     },
     addButtonText: {
+        color: '#fff', // white text color
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    editButton: {
+        backgroundColor: '#28a745', // green background
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20, // Add space between buttons
+    },
+    editButtonText: {
         color: '#fff', // white text color
         fontSize: 16,
         fontWeight: 'bold',
