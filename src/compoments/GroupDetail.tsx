@@ -8,14 +8,17 @@ import {
     TextInput,
     Button,
     ScrollView,
+    Alert,
 } from 'react-native';
 import { Group } from '../../Types';
 import { axiosUtils } from '../Utils/axiosUtils';
 import DocumentPicker from 'react-native-document-picker';
 import { createExpense } from "../Utils/GestionMethods/createExpense.tsx";
+import { useNavigation } from '@react-navigation/native';
 
 export const GroupDetails = ({ group }: { group: Group }) => {
-    const { ApiGet, ApiPost, ApiPutCustom, ApiPostCustom } = axiosUtils();
+    const { ApiGet, ApiPost, ApiPutCustom, ApiDelete } = axiosUtils();
+    const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [title, setTitle] = useState('');
@@ -35,6 +38,8 @@ export const GroupDetails = ({ group }: { group: Group }) => {
     const [groupDescription, setGroupDescription] = useState(group.description);
     const [groupImage, setGroupImage] = useState(null);
     const [groupDetails, setGroupDetails] = useState<Group | null>(group);
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+    const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
     const handleAddExpense = () => {
         setModalVisible(true);
@@ -204,6 +209,23 @@ export const GroupDetails = ({ group }: { group: Group }) => {
         }
     };
 
+    const handleDeleteGroup = async () => {
+        if (deleteConfirmation.toLowerCase() === 'oui') {
+            try {
+                await ApiDelete(`Teams/${group.id}`);
+                Alert.alert('Succès', 'Le groupe a été supprimé avec succès', [
+                    { text: 'OK', onPress: () => navigation.navigate('GroupList') },
+                ]);
+                // Optionally, navigate away or update the UI after deletion
+            } catch (error) {
+                Alert.alert('Erreur', 'Erreur lors de la suppression du groupe');
+                console.error('Error deleting group:', error);
+            }
+        } else {
+            Alert.alert('Erreur', 'Veuillez taper "oui" pour confirmer la suppression');
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Group Details</Text>
@@ -217,6 +239,9 @@ export const GroupDetails = ({ group }: { group: Group }) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.editButton} onPress={handleEditGroup}>
                 <Text style={styles.editButtonText}>Modifier le groupe</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => setDeleteModalVisible(true)}>
+                <Text style={styles.deleteButtonText}>Supprimer le groupe</Text>
             </TouchableOpacity>
 
             <Modal
@@ -341,6 +366,32 @@ export const GroupDetails = ({ group }: { group: Group }) => {
                     </View>
                 </View>
             </Modal>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={deleteModalVisible}
+                onRequestClose={() => setDeleteModalVisible(false)}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalTitle}>Supprimer le groupe</Text>
+                        <Text>Veuillez taper "oui" pour confirmer la suppression:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Tapez 'oui' ici"
+                            value={deleteConfirmation}
+                            onChangeText={setDeleteConfirmation}
+                        />
+                        <View style={styles.buttonRow}>
+                            <Button
+                                title="Annuler"
+                                onPress={() => setDeleteModalVisible(false)}
+                            />
+                            <Button title="Confirmer" onPress={handleDeleteGroup} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -396,6 +447,20 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     editButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    deleteButton: {
+        backgroundColor: '#dc3545',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20,
+    },
+    deleteButtonText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',

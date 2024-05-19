@@ -120,9 +120,6 @@ export const Group_list = () => {
                   <Text style={styles.cardText}>
                     Rôle: {group.isAdmin ? 'Admin' : 'Membre'}
                   </Text>
-                  <TouchableOpacity style={styles.btnCollapse} onPress={() => {}}>
-                    <Text style={styles.collapseIcon}>▼</Text>
-                  </TouchableOpacity>
                   <View style={styles.collapseContent}>
                     <Text style={styles.descriptionTitle}>
                       Description du groupe :
@@ -305,14 +302,6 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 14,
     color: '#333',
-  },
-  btnCollapse: {
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  collapseIcon: {
-    fontSize: 24,
-    color: '#07c9a3',
   },
   collapseContent: {
     display: 'none',
