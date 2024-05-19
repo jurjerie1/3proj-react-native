@@ -17,23 +17,21 @@ const COLORS = [
 ];
 
 export const CustomPieChart: React.FC<PieChartProps> = ({data}) => {
-  // Configuration du graphique
   const chartConfig = {
     backgroundGradientFrom: '#ffffff',
     backgroundGradientFromOpacity: 0,
     backgroundGradientTo: '#ffffff',
     backgroundGradientToOpacity: 0.5,
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    strokeWidth: 2, // optionnel, par défaut 3
+    strokeWidth: 2,
     barPercentage: 0.5,
-    useShadowColorFromDataset: false, // optionnel
+    useShadowColorFromDataset: false,
   };
 
-  // Transformer les données en format compatible avec PieChart
   const pieChartData = data.map((stat, index) => ({
     name: stat.category,
     population: stat.totalAmount,
-    color: COLORS[index % COLORS.length], // Utilisation des couleurs fixes
+    color: COLORS[index % COLORS.length],
     legendFontColor: '#7F7F7F',
     legendFontSize: 15,
   }));
@@ -43,13 +41,13 @@ export const CustomPieChart: React.FC<PieChartProps> = ({data}) => {
       {pieChartData.length > 0 ? (
         <PieChart
           data={pieChartData}
-          width={Dimensions.get('window').width - 40} // Ajuster la largeur avec une marge
-          height={240} // Augmenter la hauteur pour éviter la coupure
+          width={Dimensions.get('window').width - 40}
+          height={240}
           chartConfig={chartConfig}
           accessor="population"
           backgroundColor="transparent"
-          paddingLeft="15" // Ajuster le padding à gauche
-          center={[0, 0]} // Centrer le graphique
+          paddingLeft="15"
+          center={[0, 0]}
           absolute
         />
       ) : (
@@ -64,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 20, // Ajouter des marges autour du conteneur
+    margin: 20,
   },
   noDataText: {
     fontSize: 16,

@@ -24,7 +24,6 @@ export const ContactScreen = () => {
     setLoading(true);
     ApiGet('Users/contacts')
       .then(response => {
-        console.log('Contacts:', response.data); // Log to check data structure
         setContacts(response.data);
         setLoading(false);
       })

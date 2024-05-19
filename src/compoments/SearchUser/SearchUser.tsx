@@ -27,11 +27,9 @@ export const SearchUser: React.FC<SearchUserProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [userList, setUserList] = useState<User[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [hoveredUser, setHoveredUser] = useState<number | null>(null);
-  const {ApiGet, ApiPost} = axiosUtils();
+  const {ApiPost} = axiosUtils();
 
-  // Fonction pour effectuer la recherche
   const handleSearch = () => {
     if (searchTerm.length < 1) return;
     ApiPost(`Users/search`, {
@@ -40,7 +38,6 @@ export const SearchUser: React.FC<SearchUserProps> = ({
       TeamId: null,
     })
       .then(response => {
-        console.log('Résultats de la recherche:', response.data);
         setUserList(response.data);
       })
       .catch(error => {
@@ -48,20 +45,18 @@ export const SearchUser: React.FC<SearchUserProps> = ({
       });
   };
 
-  // Effet pour déclencher la recherche automatique lorsque la longueur du terme de recherche est supérieure à 3
   useEffect(() => {
     if (searchTerm.length > 3) {
       handleSearch();
     } else {
-      setUserList([]); // Réinitialise la liste des utilisateurs si la longueur du terme de recherche est inférieure à 3
+      setUserList([]);
     }
   }, [searchTerm]);
 
-  // Fonction pour sélectionner un utilisateur et réinitialiser la liste
   const handleSelectUser = (user: User) => {
     setSearchTerm('');
     setUserList([]);
-    setSearchResults(user); // Déclenche la mise à jour du résultat de recherche dans le composant parent
+    setSearchResults(user);
   };
 
   const renderItem = ({item}: {item: User}) => (

@@ -42,7 +42,7 @@ export const Navigation = () => {
           component={GroupStack}
           options={{
             title: 'groupes',
-            tabBarIcon: ({focused, color, size}) => (
+            tabBarIcon: ({color, size}) => (
               <Image
                 source={require('../../assets/group.png')}
                 style={{width: size, height: size, tintColor: color}}
@@ -55,7 +55,7 @@ export const Navigation = () => {
           component={NavigationHistoriqueUser}
           options={{
             title: 'Historique',
-            tabBarIcon: ({focused, color, size}) => (
+            tabBarIcon: ({color, size}) => (
               <Image
                 source={require('../../assets/historique.png')}
                 style={{width: size, height: size, tintColor: color}}
@@ -69,7 +69,7 @@ export const Navigation = () => {
           options={{
             title: 'Messages',
             // tabBarBadge: 3,
-            tabBarIcon: ({focused, color, size}) => (
+            tabBarIcon: ({color, size}) => (
               <Image
                 source={require('../../assets/chat.png')}
                 style={{width: size, height: size, tintColor: color}}
@@ -83,7 +83,7 @@ export const Navigation = () => {
           component={Profile}
           options={{
             title: 'profile',
-            tabBarIcon: ({focused, color, size}) => (
+            tabBarIcon: ({color, size}) => (
               <Image
                 source={require('../../assets/profile.png')}
                 style={{width: size, height: size, tintColor: color}}
@@ -92,7 +92,6 @@ export const Navigation = () => {
           }}
         />
 
-        {/* Add more tabs as needed */}
       </Tab.Navigator>
     );
   };

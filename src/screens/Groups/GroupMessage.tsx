@@ -13,7 +13,7 @@ import {axiosUtils} from '../../Utils/axiosUtils.ts';
 import {Message} from '../../../Types.ts';
 import {Chat} from '../../compoments/ChatCompoments/Chat.tsx';
 
-export const GroupMessage = ({route, navigation}) => {
+export const GroupMessage = ({route}) => {
   const {group} = route.params || {}; // Add default empty object
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -26,14 +26,14 @@ export const GroupMessage = ({route, navigation}) => {
     if (!group.id) return; // Check if group.id exists
     setLoading(true);
     ApiGet(`teams/${group.id}/messages?page=${pageNum}&pageSize=${pageSize}`)
-        .then(response => {
-          setMessages(prevMessages => [...response.data, ...prevMessages]);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Erreur lors de la récupération des messages:', error);
-          setLoading(false);
-        });
+      .then(response => {
+        setMessages(prevMessages => [...response.data, ...prevMessages]);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des messages:', error);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -47,13 +47,13 @@ export const GroupMessage = ({route, navigation}) => {
       ApiPost(`Teams/${group.id}/messages`, {
         content: newMessage,
       })
-          .then(response => {
-            setMessages(prevMessages => [response.data, ...prevMessages]);
-            setNewMessage('');
-          })
-          .catch(error => {
-            console.error("Erreur lors de l'envoi du message:", error);
-          });
+        .then(response => {
+          setMessages(prevMessages => [response.data, ...prevMessages]);
+          setNewMessage('');
+        })
+        .catch(error => {
+          console.error("Erreur lors de l'envoi du message:", error);
+        });
     }
   };
 
@@ -65,38 +65,38 @@ export const GroupMessage = ({route, navigation}) => {
 
   if (!group || !group.id) {
     return (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>No group data available.</Text>
-        </View>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>No group data available.</Text>
+      </View>
     );
   }
 
   return (
-      <View style={styles.container}>
-        <FlatList
-            data={messages}
-            renderItem={({item}) => <Chat messages={[item]} />}
-            keyExtractor={(item, index) => index.toString()}
-            inverted
-            onEndReached={loadMoreMessages}
-            onEndReachedThreshold={0.1}
-            ListFooterComponent={
-                loading && <ActivityIndicator size="small" color="#0000ff" />
-            }
-            style={styles.chatList}
+    <View style={styles.container}>
+      <FlatList
+        data={messages}
+        renderItem={({item}) => <Chat messages={[item]} />}
+        keyExtractor={(item, index) => index.toString()}
+        inverted
+        onEndReached={loadMoreMessages}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={
+          loading && <ActivityIndicator size="small" color="#0000ff" />
+        }
+        style={styles.chatList}
+      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={newMessage}
+          onChangeText={setNewMessage}
+          placeholder="Tapez un message"
         />
-        <View style={styles.inputContainer}>
-          <TextInput
-              style={styles.input}
-              value={newMessage}
-              onChangeText={setNewMessage}
-              placeholder="Tapez un message"
-          />
-          <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-            <Text style={styles.sendButtonText}>Envoyer</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+          <Text style={styles.sendButtonText}>Envoyer</Text>
+        </TouchableOpacity>
       </View>
+    </View>
   );
 };
 

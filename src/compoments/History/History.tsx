@@ -11,6 +11,7 @@ import {axiosUtils} from '../../Utils/axiosUtils.ts';
 import {fetchHistory} from '../../Utils/GestionMethods/fetchHistory.tsx';
 import {HistoryDetailsModal} from '../HistoryDetailsModal.tsx';
 
+// Define interfaces for Refund, Team, and HistoryItem
 interface Refund {
   user: {
     userName: string;
@@ -34,6 +35,8 @@ interface HistoryItem {
   date: string;
 }
 
+
+// Define the History component as a functional React component
 export const History: React.FC = () => {
   const {ApiGet} = axiosUtils();
   const [showHistoryModal, setShowHistoryModal] = useState<{
@@ -41,6 +44,7 @@ export const History: React.FC = () => {
   }>({});
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
+  // Function to toggle the visibility of the history modal
   const toggleHistoryModal = (id: string) => {
     setShowHistoryModal(prevState => ({
       ...prevState,
@@ -48,6 +52,7 @@ export const History: React.FC = () => {
     }));
   };
 
+  // Fetch the history data when the component mounts
   useEffect(() => {
     fetchHistory(ApiGet, setHistory);
   }, []);
@@ -77,7 +82,7 @@ export const History: React.FC = () => {
               <TouchableOpacity
                 onPress={() => toggleHistoryModal(historyItem.id)}>
                 <Image
-                  source={require('../../assets/info.png')} // Remplacez ceci par le chemin de votre image
+                  source={require('../../assets/info.png')}
                   style={styles.image}
                 />
               </TouchableOpacity>

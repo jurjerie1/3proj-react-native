@@ -11,7 +11,6 @@ export const UseAccount = () => {
       navigation.navigate('login');
     }
   }, [account, navigation]);
-  console.log('Account ==> ' + account);
 
   return {
     account,

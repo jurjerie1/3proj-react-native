@@ -1,13 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  Modal,
-  Alert,
-} from 'react-native';
+import {View, Text, TextInput, Button, StyleSheet, Modal} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {axiosUtils} from '../Utils/axiosUtils.ts';
 import {fetchCategories} from '../Utils/GestionMethods/fetchCategories.tsx';
@@ -37,7 +29,7 @@ export const FilterStatisticsModal: React.FC<FilterStatisticsModalProps> = ({
 
   useEffect(() => {
     fetchCategories(ApiGet, setCategories);
-  }, []); // Empty array ensures the effect runs only once
+  }, []);
 
   const handleFilterChange = (name: string, value: string) => {
     setFilters(prevFilters => ({

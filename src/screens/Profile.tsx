@@ -260,7 +260,7 @@ export const Profile = () => {
                 <View style={styles.buttonContainer}>
                   <Button title="Prendre une photo" onPress={handleTakePhoto} />
                 </View>
-                <View style={styles.buttonContainer}>
+              <View style={styles.buttonContainer}>
                   <Button title="Sélectionner une photo" onPress={handleSelectPhoto} />
                 </View>
                 <Button title="Sauvegarder les modifications" onPress={handleEditProfileSubmit} />

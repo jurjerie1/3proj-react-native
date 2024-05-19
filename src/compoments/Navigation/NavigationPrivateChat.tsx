@@ -1,8 +1,6 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ContactScreen} from '../../screens/PrivateChatScreens/ContactScreen.tsx';
 import {PrivateChatScreen} from '../../screens/PrivateChatScreens/PrivateChatScreen.tsx';
-import {API_URL_IMAGE} from '../../../config.ts';
-import {Image} from 'react-native';
 
 export const NavigationPrivateChat = () => {
   const Stack = createNativeStackNavigator();

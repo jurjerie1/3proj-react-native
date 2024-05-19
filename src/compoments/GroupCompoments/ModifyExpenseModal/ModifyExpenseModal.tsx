@@ -26,6 +26,7 @@ export const ModifyExpenseModal = ({
 }) => {
   const [allParticipants, setAllParticipants] = useState([]);
 
+  // Effect to initialize participants when the component mounts or historyItem changes
   useEffect(() => {
     if (historyItem) {
       const defaultParticipants = historyItem.refunds.map(refund => ({
@@ -43,11 +44,14 @@ export const ModifyExpenseModal = ({
 
   if (!showModifyExpenseModal || !historyItem) return null;
 
+
+  // Handle form submission
   const handleSubmit = e => {
     e.preventDefault();
     updateExpense(historyItem.id, e, allParticipants);
   };
 
+  // Handle adding a participant locally
   const handleLocalAddParticipant = () => {
     if (allParticipants.some(p => p.UserId === selectedUserId)) return;
     const user = users.find(u => u.id === selectedUserId);
@@ -56,6 +60,7 @@ export const ModifyExpenseModal = ({
     setAllParticipants([...allParticipants, newParticipant]);
   };
 
+  // Handle changing the amount for a participant locally
   const handleLocalParticipantAmountChange = (userId, amount) => {
     const updatedParticipants = allParticipants.map(p =>
       p.UserId === userId ? {...p, amount: parseFloat(amount)} : p,
@@ -63,6 +68,7 @@ export const ModifyExpenseModal = ({
     setAllParticipants(updatedParticipants);
   };
 
+  // Handle removing a participant locally
   const handleLocalRemoveParticipant = userId => {
     const updatedParticipants = allParticipants.filter(
       p => p.UserId !== userId,

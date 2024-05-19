@@ -1,7 +1,6 @@
 import {
   Image,
   StyleSheet,
-  Text,
   View,
   FlatList,
   TextInput,
