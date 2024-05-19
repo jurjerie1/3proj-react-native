@@ -52,6 +52,15 @@ export const axiosUtils = () => {
     },
   };
 
+  const customConfig = {
+    headers: {
+      Accept: '*/*',
+      Authorization: `Bearer ${account?.token}`,
+      'Content-Type': 'multipart/form-data', // Correcting the Content-Type header
+    },
+  };
+
+
 
   return {
     ApiGet: (url: string) => axiosInstance.get(`${API_URL}${url}`, config),
