@@ -8,9 +8,7 @@ export const UseAccount = () => {
 
   useEffect(() => {
     if (!account) {
-      console.log('Account ==> ' + account);
       navigation.navigate('login');
-      throw new Error('User is not authenticated');
     }
   }, [account, navigation]);
   console.log('Account ==> ' + account);
